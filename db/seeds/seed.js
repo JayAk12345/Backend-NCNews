@@ -1,4 +1,4 @@
-const db = require("../data");
+const db = require("../connection");
 const format = require("pg-format");
 
 const seed = (data) => {
@@ -71,9 +71,24 @@ const seed = (data) => {
           return [user.username, user.avatar_url, user.name];
         })
       );
-      return db.query(querySTR);
-    })
-    .then(() => {});
+      //return
+      db.query(querySTR);
+    });
+  .then(() => {
+    const formattedArticleData = articleData.map(article) => {
+      let topic = generateTopic(article, topicData);
+      let author = generateAuthor(article, userData);
+      return {
+        "article_id": article.article_id,
+        "title": article.title,
+        "body": article.body,
+        "votes": 0,
+        "topic": topic,
+        "author": author,
+        "created_at": time_stamp
+      }
+    });
+  });
 };
 
 module.exports = seed;
