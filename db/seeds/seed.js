@@ -54,7 +54,26 @@ const seed = (data) => {
           created_at TIMESTAMP, 
           body VARCHAR NOT NULL)`
       );
-    });
+    })
+    .then(() => {
+      const querySTR = format(
+        `INSERT INTO topic (slug, description) VALUES %L RETURNING *;`,
+        topicData.map((topic) => {
+          return [topic.slug, topic.description];
+        })
+      );
+      return db.query(querySTR);
+    })
+    .then(() => {
+      const querySTR = format(
+        `INSERT INTO user (username, avatar_url, name) VALUES %L RETURNING *;`,
+        userDATA.map((user) => {
+          return [user.username, user.avatar_url, user.name];
+        })
+      );
+      return db.query(querySTR);
+    })
+    .then(() => {});
 };
 
 module.exports = seed;
