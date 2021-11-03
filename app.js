@@ -1,5 +1,8 @@
 const express = require("express");
-const { handleBadUrls } = require("./controllers/errorController");
+const {
+  handleBadUrls,
+  handle500Errors,
+} = require("./controllers/errorController");
 const apiRouter = require("./routers/apiRouter");
 
 const app = express();
@@ -9,9 +12,6 @@ app.use("/api", apiRouter);
 
 app.use("*", handleBadUrls);
 
-app.use((err, req, res, next) => {
-  console.log(err);
-  res.status(500).send("error");
-});
+app.use(handle500Errors);
 
 module.exports = app;
