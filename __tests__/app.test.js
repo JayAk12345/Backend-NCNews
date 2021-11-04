@@ -51,7 +51,7 @@ describe("/api/topics", () => {
 });
 
 describe("/api/articles/:article_id", () => {
-  describe.only("GET", () => {
+  describe("GET", () => {
     it("returned object has all necessary properties", () => {
       return request(app)
         .get("/api/articles/2")
@@ -80,7 +80,14 @@ describe("/api/articles/:article_id", () => {
         .then((res) => {
           console.log(res.body, "TEST");
           expect(res.body.article_id).toBe(2);
-          expect(res.body).toEqual();
+          expect(res.body).toEqual({
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: new Date(1594329060000),
+            votes: 100,
+          });
         });
     });
   });
