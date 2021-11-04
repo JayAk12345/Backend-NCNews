@@ -50,4 +50,43 @@ describe("/api/topics", () => {
   });
 });
 
-//describe("/api/articles/:article_id", () => {});
+describe("/api/articles/:article_id", () => {
+  describe.only("GET", () => {
+    it("returned object has all necessary properties", () => {
+      return request(app)
+        .get("/api/articles/2")
+        .expect(200)
+        .then((res) => {
+          let props = [
+            "author",
+            "title",
+            "article_id",
+            "body",
+            "topic",
+            "created_at",
+            "votes",
+          ];
+          let returnedArticle = res.body;
+          let hasAllProps = props.every((prop) =>
+            returnedArticle.hasOwnProperty(prop)
+          );
+          expect(hasAllProps).toBe(true);
+        });
+    });
+    it("returns obj with correct article id and correct structure", () => {
+      return request(app)
+        .get("/api/articles/2")
+        .expect(200)
+        .then((res) => {
+          console.log(res.body, "TEST");
+          expect(res.body.article_id).toBe(2);
+          expect(res.body).toEqual();
+        });
+    });
+  });
+});
+
+// returns correct structure
+//returned obj has all necessary properties
+// returns obj with correct article ID
+// correct comment count
