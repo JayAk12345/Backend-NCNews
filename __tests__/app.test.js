@@ -3,6 +3,7 @@ const db = require("../db/connection.js");
 const testData = require("../db/data/test-data/index.js");
 const seed = require("../db/seeds/seed.js");
 const app = require("../app.js");
+const articleRouter = require("../routers/articleRouter.js");
 const {
   topicData: topicDataTest,
   userData: userDataTest,
@@ -101,7 +102,7 @@ describe("/api/articles/:article_id", () => {
     });
     it("status:400, returns bad request message when id is passed but incorrect type", () => {
       return request(app)
-        .get("/api/articles/string")
+        .get("/api/articles/banana")
         .expect(400)
         .then((res) => {
           expect(res.body.msg).toBe("Bad request");
@@ -112,6 +113,54 @@ describe("/api/articles/:article_id", () => {
         .get("/api/articles/700")
         .expect(404)
         .then((res) => {
+          expect(res.body.msg).toBe("Not found");
+        });
+    });
+  });
+  describe("PATCH", () => {
+    it("returns an object", () => {
+      return request(app)
+        .patch("/api/articles/:article_id")
+        .send({ inc_votes: 5 })
+        .expect(200)
+        .then((res) => {
+          console.log(res.body, "FIRST TEST");
+          expect(res.body).toEqual({});
+        });
+    });
+    it("status:201, returns article with updated number of votes", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: 5 })
+        .expect(200)
+        .then((res) => {
+          expect(res.body.article).toEqual({
+            article_id: 1,
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            created_at: expect.any(String),
+            votes: 105,
+          });
+        });
+    });
+    it("status:400, returns bad request message when id is passed but of the incorrect type", () => {
+      return request(app)
+        .patch("/api/articles/apple")
+        .send({ inc_votes: 5 })
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Bad request");
+        });
+    });
+    it("status:404, returns not found message if id passed is valid but does not currently exist in db", () => {
+      return request(app)
+        .patch("/api/articles/1000")
+        .send({ inc_votes: 5 })
+        .expect(404)
+        .then((res) => {
+          console.log(res.body.msg, "TEST");
           expect(res.body.msg).toBe("Not found");
         });
     });
