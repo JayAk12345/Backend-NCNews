@@ -17,3 +17,24 @@ exports.fetchArticleById = (id) => {
     return res.rows[0];
   });
 };
+
+exports.patchArticleVote = (inc_votes, id) => {
+  console.log("in models");
+
+  let queryStr = `UPDATE articles
+  SET votes = votes + $2
+  WHERE articles.article_id = $1
+  RETURNING *;`;
+  const queryParams = [id, inc_votes];
+
+  return db.query(queryStr, queryParams).then((res) => {
+    console.log(res.rows[0], "CHECK");
+    if (res.rows[0] === undefined) {
+      return Promise.reject({
+        status: 404,
+        msg: "Not found",
+      });
+    }
+    return res.rows[0];
+  });
+};
