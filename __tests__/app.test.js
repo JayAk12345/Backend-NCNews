@@ -57,7 +57,7 @@ describe("/api/articles/:article_id", () => {
         .get("/api/articles/2")
         .expect(200)
         .then((res) => {
-          let props = [
+          const props = [
             "author",
             "title",
             "article_id",
@@ -66,11 +66,21 @@ describe("/api/articles/:article_id", () => {
             "created_at",
             "votes",
           ];
-          let returnedArticle = res.body;
-          let hasAllProps = props.every((prop) =>
+          const returnedArticle = res.body;
+          const hasAllProps = props.every((prop) =>
             returnedArticle.hasOwnProperty(prop)
           );
           expect(hasAllProps).toBe(true);
+        });
+    });
+    it("returned object includes comment count property", () => {
+      return request(app)
+        .get("/api/articles/2")
+        .expect(200)
+        .then((res) => {
+          expect(res.body).toEqual(
+            expect.objectContaining({ comment_count: expect.any(String) })
+          );
         });
     });
     it("returns obj with correct article id and correct structure", () => {
@@ -78,22 +88,32 @@ describe("/api/articles/:article_id", () => {
         .get("/api/articles/2")
         .expect(200)
         .then((res) => {
-          console.log(res.body, "TEST");
           expect(res.body.article_id).toBe(2);
-          expect(res.body).toEqual({
-            title: "Living in the shadow of a great man",
-            topic: "mitch",
-            author: "butter_bridge",
-            body: "I find this existence challenging",
-            created_at: new Date(1594329060000),
-            votes: 100,
+          expect(res.body).toMatchObject({
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
           });
+        });
+    });
+    it("status:400, returns bad request message when id is passed but incorrect type", () => {
+      return request(app)
+        .get("/api/articles/string")
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Bad request");
+        });
+    });
+    it("status:404, returns not found message when request is correct but no resources exist currently", () => {
+      return request(app)
+        .get("/api/articles/700")
+        .expect(404)
+        .then((res) => {
+          expect(res.body.msg).toBe("Not found");
         });
     });
   });
 });
-
-// returns correct structure
-//returned obj has all necessary properties
-// returns obj with correct article ID
-// correct comment count
