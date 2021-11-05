@@ -1,10 +1,19 @@
 const { fetchArticleById } = require("../models/articleModel");
 
-exports.getArticleById = (req, res) => {
+exports.getArticleById = (req, res, next) => {
   console.log("in controller");
+
   const { article_id: id } = req.params;
-  console.log(req.params, "REQ");
-  fetchArticleById(id).then((response) => {
-    res.status(200).send(response);
-  });
+
+  fetchArticleById(id)
+    .then((response) => {
+      if (response === undefined) {
+        res.status(404).send({ msg: "Not found" });
+      } else {
+        res.status(200).send(response);
+      }
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
