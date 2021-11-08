@@ -1,8 +1,6 @@
 const db = require("../db/connection");
 
 exports.fetchArticleById = (id) => {
-  console.log("in model");
-
   let queryStr = `SELECT articles.*,
   COUNT(comments.comment_id) AS comment_count
   FROM articles 
@@ -19,8 +17,6 @@ exports.fetchArticleById = (id) => {
 };
 
 exports.patchArticleVote = (inc_votes, id) => {
-  console.log("in models");
-
   let queryStr = `UPDATE articles
   SET votes = votes + $2
   WHERE articles.article_id = $1
@@ -28,7 +24,6 @@ exports.patchArticleVote = (inc_votes, id) => {
   const queryParams = [id, inc_votes];
 
   return db.query(queryStr, queryParams).then((res) => {
-    console.log(res.rows[0], "CHECK");
     if (res.rows[0] === undefined) {
       return Promise.reject({
         status: 404,
