@@ -4,12 +4,13 @@ exports.handleBadUrls = (req, res) => {
 };
 
 exports.handle400Errors = (err, req, res, next) => {
-  if (err.status !== 400) {
-    next(err);
+  if (err.code === "22P02") {
+    console.log("HITTING 400 ERROR");
+    res.status(400).send({ msg: "Bad request" });
   }
-  console.log("HITTING 400 ERROR");
-  res.status(400).send({ msg: "Bad request" });
+  next(err);
 };
+
 exports.handle404Errors = (err, req, res, next) => {
   console.log("HITTING 404 ERROR");
   res.status(404).send({ msg: "Not found" });
