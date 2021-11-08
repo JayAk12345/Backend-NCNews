@@ -117,14 +117,13 @@ describe("/api/articles/:article_id", () => {
         });
     });
   });
-  describe("PATCH", () => {
+  describe.only("PATCH", () => {
     it("returns an object", () => {
       return request(app)
         .patch("/api/articles/:article_id")
         .send({ inc_votes: 5 })
         .expect(200)
         .then((res) => {
-          console.log(res.body, "FIRST TEST");
           expect(res.body).toEqual({});
         });
     });
@@ -160,7 +159,6 @@ describe("/api/articles/:article_id", () => {
         .send({ inc_votes: 5 })
         .expect(404)
         .then((res) => {
-          console.log(res.body.msg, "TEST");
           expect(res.body.msg).toBe("Not found");
         });
     });
