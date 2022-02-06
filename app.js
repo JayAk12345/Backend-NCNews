@@ -3,6 +3,7 @@ const {
   handleBadUrls,
   handle500Errors,
   handle400Errors,
+  handle404Errors,
 } = require("./controllers/errorController");
 const apiRouter = require("./routers/apiRouter");
 const cors = require("cors");
@@ -16,6 +17,8 @@ app.use("/api", apiRouter);
 app.use("*", handleBadUrls);
 
 app.use(handle400Errors);
+
+app.use(handle404Errors);
 
 app.use(handle500Errors);
 

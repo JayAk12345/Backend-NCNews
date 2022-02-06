@@ -1,6 +1,7 @@
 const {
   fetchArticleById,
   patchArticleVote,
+  fetchArticles,
 } = require("../models/articleModel");
 
 exports.getArticleById = (req, res, next) => {
@@ -22,14 +23,11 @@ exports.getArticleById = (req, res, next) => {
 exports.updateArticleVote = (req, res, next) => {
   const { inc_votes } = req.body;
   const { article_id: id } = req.params;
-  console.log("IN COMTROLLER");
   patchArticleVote(inc_votes, id)
     .then((response) => {
-      console.log("ARTICLE THEN");
       res.status(201).send(response);
     })
     .catch((err) => {
-      console.log(err);
-      res.status(404).send(err);
+      next(err);
     });
 };
