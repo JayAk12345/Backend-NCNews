@@ -4,6 +4,7 @@ const testData = require("../db/data/test-data/index.js");
 const seed = require("../db/seeds/seed.js");
 const app = require("../app.js");
 const articleRouter = require("../routers/articleRouter.js");
+const articles = require("../db/data/test-data/articles.js");
 const {
   topicData: topicDataTest,
   userData: userDataTest,
@@ -113,27 +114,28 @@ describe("/api/articles/:article_id", () => {
         .get("/api/articles/700")
         .expect(404)
         .then((res) => {
+          console.log(Object.keys(res));
           expect(res.body.msg).toBe("Not found");
         });
     });
   });
-  describe.only("PATCH", () => {
+  describe("PATCH", () => {
     it("returns an object", () => {
       return request(app)
-        .patch("/api/articles/:article_id")
-        .send({ inc_votes: 5 })
-        .expect(200)
+        .patch("/api/articles/5")
+        .send({ inc_votes: 1 })
+        .expect(201)
         .then((res) => {
-          expect(res.body).toEqual({});
+          expect(typeof res).toEqual("object");
         });
     });
-    it("status:201, returns article with updated number of votes", () => {
+    it("status:200, returns article with updated number of votes", () => {
       return request(app)
         .patch("/api/articles/1")
         .send({ inc_votes: 5 })
-        .expect(200)
+        .expect(201)
         .then((res) => {
-          expect(res.body.article).toEqual({
+          expect(res.body).toEqual({
             article_id: 1,
             title: expect.any(String),
             topic: expect.any(String),
