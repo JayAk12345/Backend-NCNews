@@ -31,3 +31,16 @@ exports.updateArticleVote = (req, res, next) => {
       next(err);
     });
 };
+
+exports.getArticles = (req, res, next) => {
+  console.log("IN ARTICLE");
+  fetchArticles(req.query)
+    .then((response) => {
+      // console.log(response, "controller");
+      res.status(200).send(response);
+    })
+    .catch((err) => {
+      console.log(err, "ERR");
+      next(err);
+    });
+};
