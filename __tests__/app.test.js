@@ -166,3 +166,70 @@ describe("/api/articles/:article_id", () => {
     });
   });
 });
+
+describe("/api/articles", () => {
+  describe.only("GET", () => {
+    it("returns a list of articles", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((res) => {
+          const props = [
+            "article_id",
+            "title",
+            "body",
+            "votes",
+            "topic",
+            "author",
+            "created_at",
+          ];
+          const articlesArray = res.body;
+          const checkAllArticles = true;
+          for (let i = 0; i++; i < articlesArray.length) {
+            const hasAllProps = props.every((prop) =>
+              articlesArray.hasOwnProperty(prop)
+            );
+            if (hasAllProps === false) {
+              checkAllArticles = false;
+            }
+          }
+
+          expect(checkAllArticles).toBe(true);
+        });
+    });
+    it("accepts a sort by query to sort articles, default order is desc", () => {
+      return request(app)
+        .get("/api/articles?sort_by=votes")
+        .expect(200)
+        .then((res) => {
+          let sorted = true;
+          const articlesArray = res.body;
+          for (let i = 0; i < articlesArray.length - 1; i++) {
+            if (articlesArray[i].votes < articlesArray[i + 1].votes) {
+              sorted = false;
+              break;
+            }
+          }
+          expect(sorted).toBe(true);
+        });
+    });
+    it("accepts a sort by query with an order query of asc", () => {
+      return request(app)
+        .get("/api/articles?sort_by=votes&order=asc")
+        .expect(200)
+        .then((res) => {
+          let sorted = true;
+          const articlesArray = res.body;
+          for (let i = 0; i < articlesArray.length - 1; i++) {
+            console.log(articlesArray[i + 1].votes);
+            if (articlesArray[i].votes > articlesArray[i + 1].votes) {
+              sorted = false;
+              console.log(sorted);
+              //  break;
+            }
+          }
+          expect(sorted).toBe(true);
+        });
+    });
+  });
+});
