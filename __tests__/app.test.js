@@ -221,14 +221,24 @@ describe("/api/articles", () => {
           let sorted = true;
           const articlesArray = res.body;
           for (let i = 0; i < articlesArray.length - 1; i++) {
-            console.log(articlesArray[i + 1].votes);
             if (articlesArray[i].votes > articlesArray[i + 1].votes) {
               sorted = false;
-              console.log(sorted);
-              //  break;
+              break;
             }
           }
           expect(sorted).toBe(true);
+        });
+    });
+    it("accepts a topic query", () => {
+      return request(app)
+        .get("api/articles?topic=coding")
+        .expect(200)
+        .then((res) => {
+          const articlesArray = res.body;
+          let isFiltered = articlesArray.every((article) => {
+            article.topic === "coding";
+          });
+          expect(isFiltered).toBe(true);
         });
     });
   });
